@@ -45,7 +45,7 @@ pub struct NewTask {
 #[derive(Deserialize, Serialize, Clone)]
 pub struct Task {
     id: TaskId,
-    description: String,
+    pub description: String,
 }
 
 #[derive(Deserialize, Serialize)]

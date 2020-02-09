@@ -446,6 +446,7 @@ dependencies = [
  "csv",
  "env_logger",
  "log",
+ "markup",
  "rusty_ulid",
  "serde",
  "serde_json",
@@ -467,6 +468,26 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "14b6052be84e6b71ab17edffc2eeabf5c2c3ae1fdb464aae35ac50c67a44e1f7"
 dependencies = [
  "cfg-if",
+]
+
+[[package]]
+name = "markup"
+version = "0.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ea6ac8a12a86863ec68a3e8ec002f85212f8731e9f7723a4cdda8b5a45b0ccb4"
+dependencies = [
+ "markup-proc-macro",
+]
+
+[[package]]
+name = "markup-proc-macro"
+version = "0.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c0ca1e2e1d8b8c6aeb80d14be1d22c13bfb949545b0e0a2bc35e369978a8c66c"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
 ]
 
 [[package]]

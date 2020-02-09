@@ -1,1 +1,2 @@
 mod store;
+mod templates;
