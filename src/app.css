@@ -75,9 +75,9 @@ li.new-task {
 }
 .flash {
   color: black;
-  background-color: pink;
+  background-color: hsl(349.5, 100%, 90.6%);
   border-radius: 3px;
-  padding-bottom: 3px;
+  padding-bottom: 2px;
 }
 @media screen and (min-width: 375px) {
   .login {
