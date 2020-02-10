@@ -6,8 +6,8 @@ const LOG_ENV_VAR: &str = "LEAF_LOG";
 mod auth;
 //mod filters;
 //mod handlers;
-mod store;
 mod public;
+mod store;
 mod templates;
 
 #[tokio::main]
@@ -19,8 +19,7 @@ async fn main() {
     let env = env_logger::Env::new().filter(LOG_ENV_VAR);
     env_logger::init_from_env(env);
 
-    let api = auth::auth()
-        .or(public::files());
+    let api = auth::auth().or(public::files());
 
     // View access logs by setting `LEAF_LOG=leaf`.
     let routes = api.with(warp::log("leaf"));

@@ -20,8 +20,8 @@ mod handlers {
     const CSS: &str = include_str!("app.css");
 
     pub async fn css() -> Result<impl warp::Reply, Infallible> {
-            Ok(Response::builder()
-                .header("Content-Type", "text/css")
-                .body(CSS))
+        Ok(Response::builder()
+            .header("Content-Type", "text/css")
+            .body(CSS))
     }
 }

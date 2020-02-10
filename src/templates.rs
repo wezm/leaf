@@ -51,10 +51,13 @@ markup::define! {
             }
         }
     }
-    Login() {
+    Login(flash: Option<String>) {
         form.login.center[action="/login", method="POST"] {
+            @if let Some(ref message) = *(flash) {
+                .flash.center { { message } }
+            }
             label[for="password"] { "Password" }
-            input#password[type="password", name="password"];
+            input#password[type="password", name="password", required?=true];
 
             input[type="submit", name="submit", value="Login"];
         }
