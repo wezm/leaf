@@ -1,0 +1,77 @@
+html {
+  background-color: #fcfcfc;
+  min-height: 100%;
+}
+body {
+  margin: 0 auto;
+  max-width: 600px;
+  line-height: 1.6;
+  font-family: sans-serif;
+  color: #444;
+  padding: 0 10px;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+body,
+input {
+  font-size: 18px;
+}
+header {
+  margin-bottom: 0.5em;
+}
+main {
+  flex: 1 0 auto;
+}
+footer {
+  font-size: smaller;
+  margin: 2em 0 1em;
+}
+h1 {
+  font-weight: normal;
+}
+.center {
+  text-align: center;
+}
+.task-list {
+  margin: 0;
+  padding: 0;
+}
+.task-list li {
+  list-style: none;
+  margin: 0.75em 0 0.75em 1.5em;
+}
+.task-list input[type='checkbox'],
+.ornament {
+  margin-left: -1.5em;
+}
+.ornament {
+  text-align: center;
+  display: inline-block;
+  min-width: 16px;
+  padding-left: 5px;
+  margin-right: 3px;
+}
+li.new-task {
+  margin-bottom: 1em;
+}
+.new-task input {
+  width: calc(100% - 16px - 5px - 3px); /* subtract ornament size */
+}
+.actions {
+  text-align: right;
+  margin: 1em 0;
+}
+.login {
+  display: flex;
+  flex-direction: column;
+  max-width: 240px;
+  margin: 0 auto;
+}
+.login label {
+  font-weight: bold;
+}
+.login > * {
+  margin: 0.25em 0;
+}
+

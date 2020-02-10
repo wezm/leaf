@@ -1,2 +1,0 @@
-mod store;
-mod templates;
