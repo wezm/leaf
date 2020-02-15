@@ -13,19 +13,71 @@ to add a link to Wunderlist. With Wunderlist being
 Features
 --------
 
+What's included:
+
+* A simple task list that lets you add and complete tasks, that's all.
 * Uncluttered design.
 * Plain text (CSV) storage.
-* Uses plain old HTML forms, (no JavaScript) — works in almost any browser,
+* Uses plain old HTML forms — works in almost any browser,
   including [Lynx].
 * Single file, dependency-free binary.
-* Super fast (typical response times ~20**µs**), memory efficient (~1.3Mb)
+* Super fast (typical response times ~20µs), memory efficient (~1.3Mb)
   server.
-* Private, no tracking.
+
+What's not included:
+
+* JavaScript.
+* User tracking of any kind.
+* Multiple lists.
+* Multiple users.
+* Sharing (outside of sharing a login).
+* Task editing.
+* Task deletion.
+* Viewing completed tasks in the UI (although they are stored in a file).
 
 Download
 --------
 
 TODO
+
+Using
+-----
+
+### Shortcuts Workflow for iOS
+
+This workflow for the built-in Shortcuts app allows you to add new tasks using the
+standard share sheet.
+
+TODO: Finish
+
+### Tips
+
+* There's no need to click the Save button when adding a task. Just hit Enter
+  and the default browser behaviour of submitting the form will take place.
+
+### Font
+
+To minimise page weight Leaf does not use and web fonts. However it was
+designed using the [Muli font][Muli] and this font is specified in the CSS.
+Install the font if you would like Leaf use it. If you'd rather not install it,
+that's fine — Leaf will use your browsers default sans-serif font.
+
+FAQ
+---
+
+### Why no editing or deletion of tasks?
+
+Just complete it and add a new one.
+
+### Why no completed task list?
+
+Leaf stores all completed tasks in a separate file for manual review if needed.
+To avoid unnecessarily complicating the UI it is not exposed there though.
+
+### What if I accidentally complete a task?
+
+Add it again as a new task. If you're unsure of the content review the completed
+task list file manually.
 
 Running
 -------
@@ -82,13 +134,6 @@ If setting the var in a shell use single quotes:
     on stdout.
 * `argon2` receives the random salt as an argument, it reads the password from
   stdin and prints just the encoded hash on stdout (`-e`).
-
-### Font
-
-To minimise page weight Leaf does not use and web fonts. However it was
-designed using the [Muli font][Muli] and this font is specified in the CSS.
-Install the font if you would like Leaf use it. If you'd rather not install it,
-that's fine — Leaf will use your browsers default sans-serif font.
 
 File Format
 -----------
