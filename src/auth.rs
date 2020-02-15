@@ -26,6 +26,7 @@ pub fn login() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejectio
 }
 
 mod handlers {
+    use crate::handlers::redirect;
     use serde::Deserialize;
     use std::convert::Infallible;
     use std::env;
@@ -53,7 +54,7 @@ mod handlers {
         let hash = env::var(LEAF_PASSWORD_HASH).unwrap();
         if verify(&hash, credentials.password.as_bytes()) {
             // FIXME: Location should be absolute URL?
-            Ok(Box::new(warp::redirect(Uri::from_static("/"))))
+            Ok(Box::new(redirect(Uri::from_static("/"))))
         } else {
             let page = new(Some(String::from("Invalid password."))).await.unwrap();
             Ok(Box::new(page))

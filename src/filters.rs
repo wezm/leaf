@@ -1,5 +1,5 @@
 use super::handlers;
-use leaf::models::{State, Task};
+use leaf::models::{NewTask, State, Task};
 use warp::Filter;
 
 /// The 4 TODOs filters combined.
@@ -21,13 +21,13 @@ pub fn tasks_list(
         .and_then(handlers::list_tasks)
 }
 
-/// POST /tasks with JSON body
+/// POST /tasks with form body
 pub fn tasks_create(
     state: State,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     warp::path!("tasks")
         .and(warp::post())
-        .and(json_body())
+        .and(form_body())
         .and(with_state(state))
         .and_then(handlers::create_task)
 }
@@ -56,8 +56,8 @@ fn with_state(
     warp::any().map(move || state.clone())
 }
 
-fn json_body() -> impl Filter<Extract = (Task,), Error = warp::Rejection> + Clone {
-    // When accepting a body, we want a JSON body
-    // (and to reject huge payloads)...
-    warp::body::content_length_limit(1024 * 16).and(warp::body::json())
+fn form_body() -> impl Filter<Extract = (NewTask,), Error = warp::Rejection> + Clone {
+    // When accepting a body, we want a form body
+    // (and to reject large payloads)...
+    warp::body::content_length_limit(16 * 1024).and(warp::body::form())
 }

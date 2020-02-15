@@ -95,7 +95,9 @@ impl ReadWriteTaskList {
         match File::open(path) {
             Ok(file) => {
                 let file = BufReader::new(file);
-                let mut rdr = csv::Reader::from_reader(file);
+                let mut rdr = csv::ReaderBuilder::new()
+                    .has_headers(false)
+                    .from_reader(file);
                 rdr.deserialize()
                     .collect::<Result<Vec<_>, _>>()
                     .map_err(Error::from)

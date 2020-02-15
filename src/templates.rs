@@ -31,7 +31,7 @@ markup::define! {
             ul."task-list" {
                 li."new-task" {
                     span.ornament {{markup::raw("➕&#xFE0E;")}}
-                    input[type="text", name="newtask", placeholder="New task"];
+                    input[type="text", name="description", placeholder="New task"];
                 }
                 @for task in *(tasks) {
                     {Task { description: &task.description }}

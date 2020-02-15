@@ -13,6 +13,7 @@ pub type TaskId = Ulid;
 pub type Timestamp = DateTime<Utc>;
 
 // TODO: Revisit visibility of structs and their fields
+#[derive(Debug, Deserialize)]
 pub struct NewTask {
     pub description: String,
 }

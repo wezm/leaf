@@ -1,7 +1,8 @@
 use super::templates;
-use leaf::models::{State, Task};
+use leaf::models::{NewTask, State, Task};
 use std::convert::Infallible;
-use warp::http::StatusCode;
+use warp::http::header::HeaderValue;
+use warp::http::{self, StatusCode, Uri};
 
 pub async fn list_tasks(state: State) -> Result<impl warp::Reply, Infallible> {
     let store = state.lock().await;
@@ -14,14 +15,11 @@ pub async fn list_tasks(state: State) -> Result<impl warp::Reply, Infallible> {
     Ok(warp::reply::html(page.to_string()))
 }
 
-pub async fn create_task(create: Task, state: State) -> Result<impl warp::Reply, Infallible> {
-    log::debug!("create_task: {:?}", create);
-
-    let mut vec = state.lock().await;
-
-    // TODO
-
-    Ok(StatusCode::CREATED)
+pub async fn create_task(task: NewTask, state: State) -> Result<Box<dyn warp::Reply>, Infallible> {
+    log::debug!("create_task: {:?}", task);
+    let mut store = state.lock().await;
+    store.add(task); // TODO Handle result
+    Ok(Box::new(redirect(Uri::from_static("/tasks"))))
 }
 
 pub async fn complete_task(id: u64, state: State) -> Result<impl warp::Reply, Infallible> {
@@ -41,4 +39,10 @@ pub async fn complete_task(id: u64, state: State) -> Result<impl warp::Reply, In
         log::debug!("    -> task id not found!");
         Ok(StatusCode::NOT_FOUND)
     }
+}
+
+pub fn redirect(uri: Uri) -> impl warp::Reply {
+    let value =
+        HeaderValue::from_maybe_shared(uri.to_string()).expect("Uri is a valid HeaderValue");
+    warp::reply::with_header(StatusCode::FOUND, http::header::LOCATION, value)
 }

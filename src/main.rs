@@ -38,7 +38,7 @@ async fn main() {
     let tasks_path = env::var_os(LEAF_TASKS_PATH).unwrap_or_else(|| OsString::from("tasks.csv"));
     let completed_path =
         env::var_os(LEAF_COMPLETED_PATH).unwrap_or_else(|| OsString::from("completed.csv"));
-    let tasks = ReadWriteTaskList::new(&tasks_path).expect("FIXME");
+    let tasks = ReadWriteTaskList::new(&tasks_path).expect("FIXME tasks.csv");
     let completed = AppendOnlyTaskList::new(&completed_path).expect("FIXME");
     let mut store = Store::new(tasks, completed);
     let state = Arc::new(Mutex::new(store));
