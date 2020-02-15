@@ -17,7 +17,6 @@ mod filters;
 mod handlers;
 mod public;
 mod templates;
-//mod models;
 
 #[tokio::main]
 async fn main() {

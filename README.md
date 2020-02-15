@@ -79,6 +79,10 @@ To avoid unnecessarily complicating the UI it is not exposed there though.
 Add it again as a new task. If you're unsure of the content review the completed
 task list file manually.
 
+### What if I really want multiple lists?
+
+You can run multiple instances of Leaf. Each server process is very small.
+
 Running
 -------
 

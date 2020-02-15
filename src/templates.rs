@@ -34,7 +34,7 @@ markup::define! {
                     input[type="text", name="description", placeholder="New task"];
                 }
                 @for task in *(tasks) {
-                    {Task { description: &task.description }}
+                    {Task { id: task.id.to_string(), description: &task.description }}
                 }
             }
 
@@ -43,10 +43,10 @@ markup::define! {
             }
         }
     }
-    Task<'a>(description: &'a str) {
+    Task<'a>(id: String, description: &'a str) {
         li {
             label {
-                input[type="checkbox", name="completed", value="1"];
+                input[type="checkbox", name=format!("complete_{}", id), value=id];
                 {description}
             }
         }

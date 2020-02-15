@@ -1,5 +1,6 @@
 use super::templates;
-use leaf::models::{NewTask, State, Task};
+use leaf::models::{NewTask, State, Task, TaskId, TasksForm};
+use rusty_ulid::Ulid;
 use std::convert::Infallible;
 use warp::http::header::HeaderValue;
 use warp::http::{self, StatusCode, Uri};
@@ -15,30 +16,40 @@ pub async fn list_tasks(state: State) -> Result<impl warp::Reply, Infallible> {
     Ok(warp::reply::html(page.to_string()))
 }
 
-pub async fn create_task(task: NewTask, state: State) -> Result<Box<dyn warp::Reply>, Infallible> {
-    log::debug!("create_task: {:?}", task);
+pub async fn handle_tasks_form(
+    form: TasksForm,
+    state: State,
+) -> Result<Box<dyn warp::Reply>, Infallible> {
     let mut store = state.lock().await;
-    store.add(task); // TODO Handle result
-    Ok(Box::new(redirect(Uri::from_static("/tasks"))))
-}
 
-pub async fn complete_task(id: u64, state: State) -> Result<impl warp::Reply, Infallible> {
-    log::debug!("complete_task: id={}", id);
+    let description = form
+        .get("description")
+        .map(|value| value.trim())
+        .unwrap_or_default();
 
-    let mut vec = state.lock().await;
-
-    // TODO
-
-    let deleted = false;
-
-    if deleted {
-        // respond with a `204 No Content`, which means successful,
-        // yet no body expected...
-        Ok(StatusCode::NO_CONTENT)
-    } else {
-        log::debug!("    -> task id not found!");
-        Ok(StatusCode::NOT_FOUND)
+    // Create new task if present
+    if !description.is_empty() {
+        let task = NewTask {
+            description: description.to_string(),
+        };
+        log::debug!("create_task: {:?}", task);
+        store.add(task).expect("failed to add"); // TODO Handle result
     }
+
+    // Complete any checked tasks
+    let completed_ids = form
+        .iter()
+        .filter_map(|(key, value)| {
+            if key.starts_with("complete") {
+                value.parse().ok()
+            } else {
+                None
+            }
+        })
+        .collect::<Vec<TaskId>>();
+    store.complete(&completed_ids).expect("failed to complete"); // FIXME
+
+    Ok(Box::new(redirect(Uri::from_static("/tasks"))))
 }
 
 pub fn redirect(uri: Uri) -> impl warp::Reply {
