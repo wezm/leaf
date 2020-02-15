@@ -110,7 +110,8 @@ impl ReadWriteTaskList {
     }
 
     fn write_tasks(tasks: &[&Task], file: &mut File) -> Result<(), Error> {
-        let mut writer = csv::Writer::from_writer(file);
+        let mut builder = csv::WriterBuilder::new();
+        let mut writer = builder.has_headers(false).from_writer(file);
         for &task in tasks {
             writer.serialize(task)?;
         }
