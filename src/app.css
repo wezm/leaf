@@ -6,7 +6,6 @@ body {
   margin: 0 auto;
   max-width: 600px;
   line-height: 1.6;
-  font-family: sans-serif;
   color: #444;
   padding: 0 10px;
   display: flex;
@@ -15,6 +14,7 @@ body {
 }
 body,
 input {
+  font-family: Muli, sans-serif;
   font-size: 18px;
 }
 header {

@@ -14,12 +14,13 @@ Features
 --------
 
 * Uncluttered design.
-* Plain test (CSV) storage.
+* Plain text (CSV) storage.
 * Uses plain old HTML forms, (no JavaScript) — works in almost any browser,
   including [Lynx].
-* Single file, dependency free binary.
+* Single file, dependency-free binary.
 * Super fast (typical response times ~20**µs**), memory efficient (~1.3Mb)
   server.
+* Private, no tracking.
 
 Download
 --------
@@ -82,6 +83,13 @@ If setting the var in a shell use single quotes:
 * `argon2` receives the random salt as an argument, it reads the password from
   stdin and prints just the encoded hash on stdout (`-e`).
 
+### Font
+
+To minimise page weight Leaf does not use and web fonts. However it was
+designed using the [Muli font][Muli] and this font is specified in the CSS.
+Install the font if you would like Leaf use it. If you'd rather not install it,
+that's fine — Leaf will use your browsers default sans-serif font.
+
 File Format
 -----------
 
@@ -106,3 +114,4 @@ source files are changed I use [watchexec]:
 [Feedbin]: https://feedbin.com/
 [watchexec]: https://github.com/watchexec/watchexec
 [Lynx]: https://lynx.invisible-island.net/
+[Muli]: https://www.fontsquirrel.com/fonts/muli

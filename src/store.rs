@@ -6,15 +6,13 @@ use std::{fmt, fs, io};
 
 use chrono::prelude::*;
 use rusty_ulid::Ulid;
-use serde::{Deserialize, Serialize};
+
+use crate::models::*; // FIXME: *
 
 // This module operates under the assumption that the active task list will generally remain
 // fairly small, but the completed list will be more or less ever growing. This, we typically
 // write out the whole active task list to a new file and move it into place but append only
 // the the completed list.
-
-pub type TaskId = Ulid;
-pub type Timestamp = DateTime<Utc>; // FIXME
 
 #[derive(Debug)]
 pub enum Error {
@@ -30,6 +28,10 @@ pub trait AddTasks {
     fn add(&mut self, tasks: &[&Task]) -> Result<(), Error>;
 }
 
+pub trait ListTasks {
+    fn list(&self) -> &[Task];
+}
+
 pub trait RemoveTasks {
     fn remove(
         &mut self,
@@ -38,26 +40,9 @@ pub trait RemoveTasks {
     ) -> Result<(), Error>;
 }
 
-pub struct NewTask {
-    description: String,
-}
-
-#[derive(Deserialize, Serialize, Clone)]
-pub struct Task {
-    id: TaskId,
-    pub description: String,
-}
-
-#[derive(Deserialize, Serialize)]
-pub struct CompletedTask<'task> {
-    id: TaskId,
-    description: &'task str,
-    completed_at: Timestamp,
-}
-
 pub struct Store<Tasks, Completed>
 where
-    Tasks: CreateTask + RemoveTasks,
+    Tasks: CreateTask + RemoveTasks + ListTasks,
     Completed: AddTasks,
 {
     tasks: Tasks,
@@ -75,7 +60,7 @@ pub struct AppendOnlyTaskList {
 
 impl<Tasks, Completed> Store<Tasks, Completed>
 where
-    Tasks: CreateTask + RemoveTasks,
+    Tasks: CreateTask + RemoveTasks + ListTasks,
     Completed: AddTasks,
 {
     pub fn new(tasks: Tasks, completed: Completed) -> Self {
@@ -90,6 +75,10 @@ where
         let completed = &mut self.completed;
         self.tasks
             .remove(task_ids, |removed_tasks| completed.add(&removed_tasks))
+    }
+
+    pub fn list(&self) -> &[Task] {
+        self.tasks.list()
     }
 }
 
@@ -171,7 +160,6 @@ impl RemoveTasks for ReadWriteTaskList {
                 .tasks
                 .iter()
                 .partition(|task| task_ids.contains(&task.id));
-            //.filter_map(|task| if task_ids.contains(&task.id) { Some(task.to_owned()) } else { None }).collect();
 
             // Write out all tasks
             Self::write_tasks(&keep, &mut file)?;
@@ -188,6 +176,12 @@ impl RemoveTasks for ReadWriteTaskList {
         self.tasks = keep.into_iter().cloned().collect();
 
         Ok(())
+    }
+}
+
+impl ListTasks for ReadWriteTaskList {
+    fn list(&self) -> &[Task] {
+        self.tasks.as_slice()
     }
 }
 
