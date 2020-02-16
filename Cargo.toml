@@ -7,15 +7,19 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+base64 = "0.11.0"
 chrono = { version = "0.4.10", features = ["serde"] } # Needs to match ulid
+cookie = "0.13.3"
 csv = "1.1"
 env_logger = "0.7.1"
+getrandom = "0.1.14"
 log = "0.4"
 markup = "0.4.1"
 rust-argon2 = { version = "0.8.0", default-features = false }
 rusty_ulid = { version = "0.9.2", default-features = false, features = ["serde", "ulid-generation"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
+time = "0.2.6" # match cookie
 tokio = { version = "0.2", features = ["macros"] }
 warp = { version = "0.2.1", default-features = false }
 

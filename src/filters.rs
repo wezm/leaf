@@ -1,19 +1,21 @@
 use super::handlers;
 use leaf::models::{NewTask, State, Task, TaskId, TasksForm};
+use serde::de::DeserializeOwned;
+use std::sync::Arc;
 use warp::Filter;
 
 /// The 4 TODOs filters combined.
 pub fn tasks(
     state: State,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    tasks_list(state.clone()).or(tasks_form(state.clone()))
+    tasks_list(Arc::clone(&state)).or(tasks_form(state))
 }
 
 /// GET /tasks
 pub fn tasks_list(
     state: State,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    warp::path!("tasks")
+    warp::path::end()
         .and(warp::get())
         .and(with_state(state))
         .and_then(handlers::list_tasks)
@@ -56,8 +58,9 @@ fn with_state(
     warp::any().map(move || state.clone())
 }
 
-fn form_body() -> impl Filter<Extract = (TasksForm,), Error = warp::Rejection> + Clone {
+pub fn form_body<T: DeserializeOwned + Send>(
+) -> impl Filter<Extract = (T,), Error = warp::Rejection> + Clone {
     // When accepting a body, we want a form body
     // (and to reject large payloads)...
-    warp::body::content_length_limit(16 * 1024).and(warp::body::form())
+    warp::body::content_length_limit(16 * 1024).and(warp::body::form::<T>())
 }

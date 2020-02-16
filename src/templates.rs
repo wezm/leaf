@@ -30,7 +30,7 @@ markup::define! {
         form[action="/tasks", method="POST"] {
             ul."task-list" {
                 li."new-task" {
-                    span.ornament {{markup::raw("➕&#xFE0E;")}}
+                    span.ornament {{markup::raw("➕&#xFE0E; ")}}
                     input[type="text", name="description", placeholder="New task"];
                 }
                 @for task in *(tasks) {
@@ -47,6 +47,7 @@ markup::define! {
         li {
             label {
                 input[type="checkbox", name=format!("complete_{}", id), value=id];
+                " "
                 {description}
             }
         }

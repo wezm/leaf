@@ -100,7 +100,8 @@ package is probably called `argon2`.
 
 The shell snippet below will read your from stdin and then prints the hash.
 Type your chosen password and press Enter, note that it will echo in the
-terminal.  See below for an explanation of the snippet.
+terminal.  See below for an
+[explanation of the snippet](#password-hash-shell-snippet-explanation).
 
     (read -r PASS; echo -n "$PASS" | argon2 $(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | head -c 8) -e)
 
@@ -113,8 +114,38 @@ should be set to.
 If setting the var in a shell use single quotes:
 
     export LEAF_PASSWORD_HASH='$argon2i$v=19$m=4096,t=3,p=1$eEVkYlJFZGY$N0p7VxqHDGBZ1ivgotGv2olZ/eXM9WPPCRf0wZuyyLo'
+    
+#### `LEAF_SECURE_COOKIE` (optional)
 
-##### Shell Snippet Explanation
+**Default:** `true`
+
+Whether the login cookie sets [the secure flag][secure-cookie]. For local development
+without https, set this to `false.`
+
+File Format
+-----------
+
+TODO
+
+API
+---
+
+TODO
+
+Development
+-----------
+
+### Auto-reloading server
+
+To run the server during development and have it rebuild and restart when
+source files are changed I use [watchexec]:
+
+    LEAF_SECURE_COOKIE=false watchexec -w src -s SIGINT -r 'cargo run'
+    
+Appendix
+--------
+
+### Password Hash Shell Snippet Explanation
 
 * The outer brackets `()` run the command in a sub-shell, this is to prevent
   the `PASS` environment variable remaining set in your shell.
@@ -139,25 +170,6 @@ If setting the var in a shell use single quotes:
 * `argon2` receives the random salt as an argument, it reads the password from
   stdin and prints just the encoded hash on stdout (`-e`).
 
-File Format
------------
-
-TODO
-
-API
----
-
-TODO
-
-Development
------------
-
-### Auto-reloading server
-
-To run the server during development and have it rebuild and restart when
-source files are changed I use [watchexec]:
-
-    watchexec -w src -s SIGINT -r 'cargo run'
 
 [Read Rust]: https://readrust.net/
 [Feedbin]: https://feedbin.com/
