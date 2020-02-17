@@ -14,8 +14,14 @@ body {
 }
 body,
 input {
-  font-family: Muli, sans-serif;
+  font-family: Muli, Avenir, sans-serif;
   font-size: 18px;
+}
+input[type='submit'] {
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  font-weight: 500;
 }
 header {
   margin-bottom: 0.5em;
@@ -73,6 +79,13 @@ li.new-task {
 .login > * {
   margin: 0.25em 0;
 }
+.logout {
+  display: inline-block;
+}
+.logout input {
+  font-size: 0.5rem;
+  font-weight: 600;
+}
 .flash {
   color: black;
   background-color: hsl(349.5, 100%, 90.6%);
@@ -82,6 +95,9 @@ li.new-task {
 @media screen and (min-width: 375px) {
   .login {
     max-width: 300px;
+  }
+  input[type='submit'] {
+    min-height: 2.5em;
   }
 }
 

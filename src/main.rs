@@ -44,8 +44,8 @@ async fn main() {
     let config = Arc::new(config);
     let session_store = Arc::new(Mutex::new(HashSet::new()));
 
-    let api = auth::auth(config, session_store)
-        .or(filters::tasks(state))
+    let api = auth::auth(config, Arc::clone(&session_store))
+        .or(filters::tasks(state, session_store))
         .or(public::files());
 
     // View access logs by setting `LEAF_LOG=leaf`.

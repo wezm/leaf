@@ -1,7 +1,7 @@
 use leaf::models;
 
 markup::define! {
-    Layout<'title, Body: markup::Render>(body: Body, title: &'title str) {
+    Layout<'title, Body: markup::Render>(body: Body, title: &'title str /*, signed_in: bool*/) {
         {markup::doctype()}
         html[lang="en"] {
             head {
@@ -19,8 +19,11 @@ markup::define! {
                 }
                 footer.center {
                     div.copyright {
-                        "Copyright © 2020 Wesley Moore — "
-                        a[href="https://github.com/wezm/wezm.net"] {"Source on GitHub"}
+                        a[href="https://github.com/wezm/leaf"] {"Leaf Tasks"}
+                        " — "
+                        form.logout[action="/logout", method="POST"] {
+                            input[type="submit", name="submit", value="Sign Out"];
+                        }
                     }
                 }
             }
@@ -60,7 +63,7 @@ markup::define! {
             label[for="password"] { "Password" }
             input#password[type="password", name="password", required?=true];
 
-            input[type="submit", name="submit", value="Login"];
+            input[type="submit", name="submit", value="Sign In"];
         }
     }
 }

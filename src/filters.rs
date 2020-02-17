@@ -1,4 +1,6 @@
 use super::handlers;
+use crate::auth;
+use crate::auth::SessionStore;
 use leaf::models::{NewTask, State, Task, TaskId, TasksForm};
 use serde::de::DeserializeOwned;
 use std::sync::Arc;
@@ -7,16 +9,20 @@ use warp::Filter;
 /// The 4 TODOs filters combined.
 pub fn tasks(
     state: State,
+    sessions: SessionStore,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    tasks_list(Arc::clone(&state)).or(tasks_form(state))
+    tasks_list(Arc::clone(&state), Arc::clone(&sessions)).or(tasks_form(state, sessions))
 }
 
 /// GET /tasks
 pub fn tasks_list(
     state: State,
+    sessions: SessionStore,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     warp::path::end()
         .and(warp::get())
+        .and(auth::login_required(sessions))
+        .untuple_one()
         .and(with_state(state))
         .and_then(handlers::list_tasks)
 }
@@ -26,9 +32,12 @@ pub fn tasks_list(
 /// Creates new tasks and completes existing ones.
 pub fn tasks_form(
     state: State,
+    sessions: SessionStore,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     warp::path!("tasks")
         .and(warp::post())
+        .and(auth::login_required(sessions))
+        .untuple_one()
         .and(form_body())
         .and(with_state(state))
         .and_then(handlers::handle_tasks_form)
