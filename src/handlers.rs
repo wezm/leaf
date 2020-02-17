@@ -49,7 +49,7 @@ pub async fn handle_tasks_form(
         .collect::<Vec<TaskId>>();
     store.complete(&completed_ids).expect("failed to complete"); // FIXME
 
-    Ok(Box::new(redirect(Uri::from_static("/tasks"))))
+    Ok(Box::new(redirect(Uri::from_static("/"))))
 }
 
 pub fn redirect(uri: Uri) -> impl warp::Reply {
