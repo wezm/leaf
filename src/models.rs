@@ -1,14 +1,12 @@
 use chrono::prelude::*;
 use rusty_ulid::Ulid;
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
-use std::sync::Arc;
-use tokio::sync::Mutex;
+use std::sync::{Arc, Mutex};
 
-use crate::store::{AppendOnlyTaskList, ReadWriteTaskList, Store};
+use crate::store::{self, AppendOnlyTaskList, ReadWriteTaskList};
 
 // TODO: Move
-pub type State = Arc<Mutex<Store<ReadWriteTaskList, AppendOnlyTaskList>>>;
+pub type Store = Arc<Mutex<store::Store<ReadWriteTaskList, AppendOnlyTaskList>>>;
 
 pub type TaskId = Ulid;
 pub type Timestamp = DateTime<Utc>;
@@ -31,9 +29,6 @@ pub struct CompletedTask<'task> {
     pub description: &'task str,
     pub completed_at: Timestamp,
 }
-
-// TODO: Move this into a server specific module
-pub type TasksForm = HashMap<String, String>;
 
 // Ideally we would use something like this for the form but serde_urlencoded
 // as used by warp is severely limited when it comes to sequences. Not

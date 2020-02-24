@@ -1,57 +1,97 @@
-mod auth;
+#![feature(proc_macro_hygiene, decl_macro)]
+
+#[macro_use]
+extern crate rocket;
+
 mod config;
-mod filters;
-mod handlers;
+mod form;
 mod public;
 mod templates;
+#[cfg(test)]
+mod tests;
 
 use std::env;
 use std::ffi::OsString;
 use std::process::exit;
-use std::sync::Arc;
-use tokio::sync::Mutex;
+use std::sync::{Arc, Mutex};
 
-use warp::Filter;
+use rocket::request::{FlashMessage, LenientForm};
+use rocket::response::{content, Flash, Redirect};
+use rocket::{Rocket, State};
 
-use leaf::store::{AppendOnlyTaskList, ReadWriteTaskList, Store};
-use std::collections::HashSet;
+use leaf::models::{NewTask, Store};
+use leaf::store::{self, AppendOnlyTaskList, ReadWriteTaskList};
+
+use config::Config;
+use form::TasksForm;
 
 const LOG_ENV_VAR: &str = "LEAF_LOG";
 const LEAF_TASKS_PATH: &str = "LEAF_TASKS_PATH";
 const LEAF_COMPLETED_PATH: &str = "LEAF_COMPLETED_PATH";
 
-use config::Config;
+#[get("/")]
+fn index(msg: Option<FlashMessage>, state: State<Store>) -> content::Html<String> {
+    let store = state.lock().unwrap();
+    let page: templates::Layout<'_, _> = templates::Layout {
+        title: "🍃 Tasks",
+        body: templates::Index {
+            tasks: store.list(),
+        },
+    };
+    content::Html(page.to_string())
+}
 
-#[tokio::main]
-async fn main() {
-    if env::var_os(LOG_ENV_VAR).is_none() {
-        // Set `LEAF_LOG=leaf=debug` to see debug logs, this only shows access logs.
-        env::set_var(LOG_ENV_VAR, "leaf=info");
+#[post("/", data = "<form>")]
+fn form(form: LenientForm<TasksForm>, state: State<Store>) -> Result<Redirect, Flash<Redirect>> {
+    let form = form.into_inner();
+    let mut store = state.lock().unwrap();
+
+    // Create new task if present
+    if let Some(description) = form.new_task {
+        let task = NewTask { description };
+        log::debug!("create_task: {:?}", task);
+        store
+            .add(task)
+            .map_err(|_err| Flash::error(Redirect::to("/"), "Failed to add new task"))?;
     }
-    let env = env_logger::Env::new().filter(LOG_ENV_VAR);
-    env_logger::init_from_env(env);
 
-    let config = Config::from_env().unwrap_or_else(exit_config_error);
+    // Complete any checked tasks
+    store
+        .complete(&form.completed_ids)
+        .map_err(|_err| Flash::error(Redirect::to("/"), "Failed to complete tasks"))?;
+
+    Ok(Redirect::to("/"))
+}
+
+#[get("/app.css")]
+fn css() -> content::Css<&'static str> {
+    content::Css(public::CSS)
+}
+
+fn rocket() -> Rocket {
+    //    let env = env_logger::Env::new().filter(LOG_ENV_VAR);
+    //    env_logger::init_from_env(env);
 
     let tasks_path = env::var_os(LEAF_TASKS_PATH).unwrap_or_else(|| OsString::from("tasks.csv"));
     let completed_path =
         env::var_os(LEAF_COMPLETED_PATH).unwrap_or_else(|| OsString::from("completed.csv"));
     let tasks = ReadWriteTaskList::new(&tasks_path).expect("FIXME tasks.csv");
     let completed = AppendOnlyTaskList::new(&completed_path).expect("FIXME");
-    let store = Store::new(tasks, completed);
-    let state = Arc::new(Mutex::new(store));
+    let store = store::Store::new(tasks, completed);
+    let store = Arc::new(Mutex::new(store));
 
+    let config = Config::from_env().unwrap_or_else(exit_config_error);
     let config = Arc::new(config);
-    let session_store = Arc::new(Mutex::new(HashSet::new()));
 
-    let api = auth::auth(config, Arc::clone(&session_store))
-        .or(filters::tasks(state, session_store))
-        .or(public::files());
+    rocket::ignite()
+        .mount("/", routes![index, css])
+        .mount("/tasks", routes![form])
+        .manage(config)
+        .manage(store)
+}
 
-    // View access logs by setting `LEAF_LOG=leaf`.
-    let routes = api.with(warp::log("leaf"));
-    // Start up the server...
-    warp::serve(routes).run(([0, 0, 0, 0], 3030)).await;
+fn main() {
+    rocket().launch();
 }
 
 fn exit_config_error(err: String) -> Config {

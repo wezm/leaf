@@ -102,10 +102,16 @@ mod tests {
         );
         assert!(parse_secret_key_base("").is_err());
         // too long
-        assert!(parse_secret_key_base("0102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F2000").is_err());
+        assert!(parse_secret_key_base(
+            "0102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F2000"
+        )
+        .is_err());
         // too short
         assert!(parse_secret_key_base("CAFE").is_err());
         // non hex char
-        assert!(parse_secret_key_base("0102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F20ZZ").is_err());
+        assert!(parse_secret_key_base(
+            "0102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F20ZZ"
+        )
+        .is_err());
     }
 }
