@@ -183,6 +183,9 @@ Appendix
 * `argon2` receives the random salt as an argument, it reads the password from
   stdin and prints just the encoded hash on stdout (`-e`).
 
+### Generating a Rocket Secret Key
+
+    openssl rand -base64 32
 
 [Read Rust]: https://readrust.net/
 [Feedbin]: https://feedbin.com/
