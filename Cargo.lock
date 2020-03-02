@@ -283,6 +283,7 @@ version = "0.1.0"
 dependencies = [
  "chrono",
  "csv",
+ "hyper",
  "log 0.4.8",
  "markup",
  "rocket",

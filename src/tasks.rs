@@ -6,7 +6,7 @@ use rocket::{Route, State};
 
 use leaf::models::{NewTask, Store};
 
-use crate::auth::{self, User};
+use crate::auth::{self, User, UserOrToken};
 use crate::form::TasksForm;
 use crate::templates;
 
@@ -33,7 +33,7 @@ fn index_logged_out() -> Redirect {
 
 #[post("/tasks", data = "<form>")]
 fn form(
-    _user: User,
+    _auth: UserOrToken,
     form: LenientForm<TasksForm>,
     state: State<Store>,
 ) -> Result<Redirect, Flash<Redirect>> {

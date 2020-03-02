@@ -3,7 +3,9 @@
 use crate::{config, templates};
 use std::sync::Arc;
 
-use rocket::http::{Cookie, Cookies};
+use hyper::header::Header;
+use rocket::http::hyper::header::{Authorization, Bearer};
+use rocket::http::{Cookie, Cookies, Status};
 use rocket::outcome::IntoOutcome;
 use rocket::request::{self, FlashMessage, FromRequest, LenientForm, Request};
 use rocket::response::{content, Flash, Redirect};
@@ -11,13 +13,22 @@ use rocket::{Route, State};
 
 pub type Config = Arc<config::Config>;
 
+#[derive(Debug)]
+pub enum TokenError {
+    Invalid,
+}
+
+pub struct User(usize);
+pub struct Token(String);
+pub enum UserOrToken {
+    User(User),
+    Token(Token),
+}
+
 #[derive(FromForm)]
 struct Login {
     password: String,
 }
-
-#[derive(Debug)]
-pub struct User(usize);
 
 impl<'a, 'r> FromRequest<'a, 'r> for User {
     type Error = std::convert::Infallible;
@@ -29,6 +40,44 @@ impl<'a, 'r> FromRequest<'a, 'r> for User {
             .and_then(|cookie| cookie.value().parse().ok())
             .map(|id| User(id))
             .or_forward(())
+    }
+}
+
+impl<'a, 'r> FromRequest<'a, 'r> for Token {
+    type Error = TokenError;
+
+    fn from_request(request: &'a Request<'r>) -> request::Outcome<Token, Self::Error> {
+        use request::Outcome;
+
+        request
+            .headers()
+            .get_one("Authorization")
+            .and_then(|value| Header::parse_header(&[value.as_bytes().to_vec()]).ok())
+            .and_then(|token: Authorization<Bearer>| {
+                let config = request.guard::<State<Config>>().unwrap(); // NOTE(unwrap): Config should always be available
+                if token.0.token == config.api_token {
+                    Some(Outcome::Success(Token(token.0.token)))
+                } else {
+                    Some(Outcome::Failure((
+                        Status::Unauthorized,
+                        TokenError::Invalid,
+                    )))
+                }
+            })
+            .unwrap_or_else(|| Outcome::Forward(()))
+    }
+}
+
+impl<'a, 'r> FromRequest<'a, 'r> for UserOrToken {
+    type Error = TokenError;
+
+    fn from_request(request: &'a Request<'r>) -> request::Outcome<UserOrToken, Self::Error> {
+        use request::Outcome;
+
+        match request.guard::<User>().map(UserOrToken::User) {
+            Outcome::Success(user_or_token) => Outcome::Success(user_or_token),
+            _ => request.guard::<Token>().map(UserOrToken::Token),
+        }
     }
 }
 

@@ -17,8 +17,8 @@ use std::sync::{Arc, Mutex};
 
 use rocket::Rocket;
 
-use leaf::store::{self, AppendOnlyTaskList, ReadWriteTaskList};
 use config::Config;
+use leaf::store::{self, AppendOnlyTaskList, ReadWriteTaskList};
 
 const LEAF_TASKS_PATH: &str = "LEAF_TASKS_PATH";
 const LEAF_COMPLETED_PATH: &str = "LEAF_COMPLETED_PATH";
