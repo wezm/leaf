@@ -20,14 +20,10 @@ use rocket::Rocket;
 use leaf::store::{self, AppendOnlyTaskList, ReadWriteTaskList};
 use config::Config;
 
-const LOG_ENV_VAR: &str = "LEAF_LOG";
 const LEAF_TASKS_PATH: &str = "LEAF_TASKS_PATH";
 const LEAF_COMPLETED_PATH: &str = "LEAF_COMPLETED_PATH";
 
 fn rocket() -> Rocket {
-    //    let env = env_logger::Env::new().filter(LOG_ENV_VAR);
-    //    env_logger::init_from_env(env);
-
     let tasks_path = env::var_os(LEAF_TASKS_PATH).unwrap_or_else(|| OsString::from("tasks.csv"));
     let completed_path =
         env::var_os(LEAF_COMPLETED_PATH).unwrap_or_else(|| OsString::from("completed.csv"));
