@@ -1,5 +1,12 @@
-use crate::auth::User;
+use std::fmt;
+
 use leaf::models;
+use markup::Render;
+use regex::Regex;
+
+use crate::auth::User;
+
+struct AutoLink<'a>(&'a str);
 
 markup::define! {
     Layout<'title, 'user, Body: markup::Render>(body: Body, title: &'title str, user: Option<&'user User>) {
@@ -54,7 +61,7 @@ markup::define! {
             label {
                 input[type="checkbox", name=format!("complete_{}", id), value=id];
                 " "
-                {description}
+                {AutoLink(description)}
             }
         }
     }
@@ -68,5 +75,83 @@ markup::define! {
 
             input[type="submit", name="submit", value="Sign In"];
         }
+    }
+}
+
+impl<'a> Render for AutoLink<'a> {
+    fn render(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        // Source http://www.urlregex.com/ (Python version)
+        lazy_static! {
+            static ref RE: Regex = Regex::new(
+                "http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+"
+            )
+            .unwrap();
+        }
+
+        let mut start = 0;
+        for url_match in RE.find_iter(self.0) {
+            // Write out the text preceding the URL escaped
+            &self.0[start..url_match.start()].render(f)?;
+            // Write out the URL as a link, unescaped
+            markup::raw(format!(
+                r#"<a href="{url}" target="_blank">{url}</a>"#,
+                url = url_match.as_str()
+            ))
+            .render(f)?;
+            // Update the start marker
+            start = url_match.end()
+        }
+
+        if start < self.0.len() {
+            &self.0[start..].render(f)?;
+        }
+
+        Ok(())
+    }
+
+    fn is_none(&self) -> bool {
+        self.0.is_empty()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    impl<'a> fmt::Display for AutoLink<'a> {
+        fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+            self.render(f)
+        }
+    }
+
+    #[test]
+    fn test_autolink() {
+        assert_eq!(AutoLink("").to_string(), String::from(""));
+        assert_eq!(AutoLink("no url").to_string(), String::from("no url"));
+        assert_eq!(AutoLink("url.com").to_string(), String::from("url.com"));
+        assert_eq!(
+            AutoLink("https://example.com/").to_string(),
+            String::from(
+                r#"<a href="https://example.com/" target="_blank">https://example.com/</a>"#
+            )
+        );
+        assert_eq!(
+            AutoLink("https://example.com/ after url").to_string(),
+            String::from(
+                r#"<a href="https://example.com/" target="_blank">https://example.com/</a> after url"#
+            )
+        );
+        assert_eq!(
+            AutoLink("before url https://example.com/").to_string(),
+            String::from(
+                r#"before url <a href="https://example.com/" target="_blank">https://example.com/</a>"#
+            )
+        );
+        assert_eq!(
+            AutoLink("http://example.com/ https://example.com/").to_string(),
+            String::from(
+                r#"<a href="http://example.com/" target="_blank">http://example.com/</a> <a href="https://example.com/" target="_blank">https://example.com/</a>"#
+            )
+        );
     }
 }
