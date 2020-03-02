@@ -1,1 +1,4 @@
 /target
+/completed.csv
+/tasks.csv
+/.cargo
