@@ -1,14 +1,15 @@
 🍃 Leaf Tasks
 =============
 
-Leaf Tasks is a lightweight, self-hosted task tracking (todo) tool.
+Leaf is a lightweight, self-hosted task tracking (todo) tool.
 
 I created Leaf Tasks as replacement for my somewhat specific use of
 Wunderlist. I curate, [Read Rust], a site that collects interesting
 posts from the Rust community. My workflow for the site is mostly
 powered by RSS and [Feedbin] but when I encounter a post outside of
-Feedbin, typcally on my phone I use the iOS share sheet functionality
-to add a link to Wunderlist. With Wunderlist being 
+Feedbin — typically on my phone I use the iOS share sheet functionality
+to add a link to Wunderlist. With Wunderlist being shut down in May
+2020 I built Leaf as a replacement.
 
 Features
 --------
