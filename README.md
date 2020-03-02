@@ -100,7 +100,7 @@ package is probably called `argon2`.
 
 The shell snippet below will read your from stdin and then prints the hash.
 Type your chosen password and press Enter, note that it will echo in the
-terminal.  See below for an
+terminal. See below for an
 [explanation of the snippet](#password-hash-shell-snippet-explanation).
 
     (read -r PASS; echo -n "$PASS" | argon2 $(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | head -c 8) -e)
@@ -140,8 +140,20 @@ Development
 To run the server during development and have it rebuild and restart when
 source files are changed I use [watchexec]:
 
-    LEAF_SECURE_COOKIE=false watchexec -w src -s SIGINT -r 'cargo run'
-    
+    watchexec -w src -s SIGINT -r 'cargo run'
+
+### Linking with lld
+
+Using `lld` speeds up linking. I see 0.71s vs. 1.76s for an incremental build,
+15 vs. 19s for clean build. Add the following to `.cargo/config`:
+
+```toml
+[target.x86_64-unknown-linux-gnu]
+rustflags = [
+    "-C", "link-arg=-fuse-ld=lld",
+]
+```
+
 Appendix
 --------
 
