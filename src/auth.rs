@@ -1,6 +1,5 @@
 //! User authentication.
 
-use crate::{config, templates};
 use std::sync::Arc;
 
 use hyper::header::Header;
@@ -10,6 +9,8 @@ use rocket::outcome::IntoOutcome;
 use rocket::request::{self, FlashMessage, FromRequest, LenientForm, Request};
 use rocket::response::{content, Flash, Redirect};
 use rocket::{Route, State};
+
+use crate::{config, tasks, templates};
 
 pub type Config = Arc<config::Config>;
 
@@ -93,8 +94,7 @@ fn login(
 ) -> Result<Redirect, Flash<Redirect>> {
     if verify(&config.password_hash, login.password.as_bytes()) {
         cookies.add_private(Cookie::new("user_id", 1.to_string()));
-        // Ok(Redirect::to(uri!(index)))
-        Ok(Redirect::to("/")) // FIXME
+        Ok(Redirect::to(uri!(tasks::index)))
     } else {
         Err(Flash::error(
             Redirect::to(uri!(login_page)),
@@ -111,8 +111,7 @@ fn logout(mut cookies: Cookies) -> Flash<Redirect> {
 
 #[get("/login")]
 fn login_user(_user: User) -> Redirect {
-    //Redirect::to(uri!(index))
-    Redirect::to("/") // FIXME
+    Redirect::to(uri!(tasks::index))
 }
 
 #[get("/login", rank = 2)]
