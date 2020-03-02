@@ -1,0 +1,13 @@
+#!/bin/sh
+
+set -e
+
+TARGET=x86_64-unknown-linux-musl
+BINARY_PATH=target/$TARGET/release/leaf
+GIT_REV=$(git rev-parse --short HEAD)
+TARBALL_PATH=target/$TARGET/release/"leaf-${GIT_REV}.tar.gz"
+
+cargo build --target $TARGET --release
+strip $BINARY_PATH
+bsdtar zcf "$TARBALL_PATH" -C "$(dirname $BINARY_PATH)" "$(basename $BINARY_PATH)"
+aws s3 cp "$TARBALL_PATH" s3://releases.wezm.net/leaf/pre
