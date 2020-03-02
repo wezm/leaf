@@ -1,7 +1,8 @@
+use crate::auth::User;
 use leaf::models;
 
 markup::define! {
-    Layout<'title, Body: markup::Render>(body: Body, title: &'title str /*, signed_in: bool*/) {
+    Layout<'title, 'user, Body: markup::Render>(body: Body, title: &'title str, user: Option<&'user User>) {
         {markup::doctype()}
         html[lang="en"] {
             head {
@@ -20,9 +21,11 @@ markup::define! {
                 footer.center {
                     div.copyright {
                         a[href="https://github.com/wezm/leaf"] {"Leaf Tasks"}
-                        " — "
-                        form.logout[action="/logout", method="POST"] {
-                            input[type="submit", name="submit", value="Sign Out"];
+                        @if user.is_some() {
+                            " — "
+                            form.logout[action="/logout", method="POST"] {
+                                input[type="submit", name="submit", value="Sign Out"];
+                            }
                         }
                     }
                 }

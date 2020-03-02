@@ -15,13 +15,14 @@ pub fn routes() -> Vec<Route> {
 }
 
 #[get("/")]
-fn index(_user: User, _msg: Option<FlashMessage>, state: State<Store>) -> content::Html<String> {
+fn index(user: User, _msg: Option<FlashMessage>, state: State<Store>) -> content::Html<String> {
     let store = state.lock().unwrap();
-    let page: templates::Layout<'_, _> = templates::Layout {
+    let page: templates::Layout<'_, '_, _> = templates::Layout {
         title: "🍃 Tasks",
         body: templates::Index {
             tasks: store.list(),
         },
+        user: Some(&user),
     };
     content::Html(page.to_string())
 }
