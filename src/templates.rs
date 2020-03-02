@@ -55,7 +55,7 @@ markup::define! {
             }
         }
     }
-    Login(flash: Option<String>) {
+    Login<'a>(flash: Option<&'a str>) {
         form.login.center[action="/login", method="POST"] {
             @if let Some(ref message) = *(flash) {
                 .flash.center { { message } }

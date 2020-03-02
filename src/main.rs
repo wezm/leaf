@@ -3,6 +3,7 @@
 #[macro_use]
 extern crate rocket;
 
+mod auth;
 mod config;
 mod form;
 mod public;
@@ -25,12 +26,14 @@ use leaf::store::{self, AppendOnlyTaskList, ReadWriteTaskList};
 use config::Config;
 use form::TasksForm;
 
+use auth::User;
+
 const LOG_ENV_VAR: &str = "LEAF_LOG";
 const LEAF_TASKS_PATH: &str = "LEAF_TASKS_PATH";
 const LEAF_COMPLETED_PATH: &str = "LEAF_COMPLETED_PATH";
 
 #[get("/")]
-fn index(msg: Option<FlashMessage>, state: State<Store>) -> content::Html<String> {
+fn index(_user: User, msg: Option<FlashMessage>, state: State<Store>) -> content::Html<String> {
     let store = state.lock().unwrap();
     let page: templates::Layout<'_, _> = templates::Layout {
         title: "🍃 Tasks",
@@ -41,8 +44,17 @@ fn index(msg: Option<FlashMessage>, state: State<Store>) -> content::Html<String
     content::Html(page.to_string())
 }
 
+#[get("/", rank = 2)]
+fn index_logged_out() -> Redirect {
+    Redirect::to(uri!(auth::login_page))
+}
+
 #[post("/", data = "<form>")]
-fn form(form: LenientForm<TasksForm>, state: State<Store>) -> Result<Redirect, Flash<Redirect>> {
+fn form(
+    _user: User,
+    form: LenientForm<TasksForm>,
+    state: State<Store>,
+) -> Result<Redirect, Flash<Redirect>> {
     let form = form.into_inner();
     let mut store = state.lock().unwrap();
 
@@ -84,7 +96,8 @@ fn rocket() -> Rocket {
     let config = Arc::new(config);
 
     rocket::ignite()
-        .mount("/", routes![index, css])
+        .mount("/", auth::routes())
+        .mount("/", routes![index, index_logged_out, css])
         .mount("/tasks", routes![form])
         .manage(config)
         .manage(store)
