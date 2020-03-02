@@ -9,8 +9,11 @@ use rocket::outcome::IntoOutcome;
 use rocket::request::{self, FlashMessage, FromRequest, LenientForm, Request};
 use rocket::response::{content, Flash, Redirect};
 use rocket::{Route, State};
+use time::Duration;
 
 use crate::{config, tasks, templates};
+
+pub const LEAF_SESSION: &str = "LEAF_SESSION";
 
 pub type Config = Arc<config::Config>;
 
@@ -37,7 +40,7 @@ impl<'a, 'r> FromRequest<'a, 'r> for User {
     fn from_request(request: &'a Request<'r>) -> request::Outcome<User, Self::Error> {
         request
             .cookies()
-            .get_private("user_id")
+            .get_private(LEAF_SESSION)
             .and_then(|cookie| cookie.value().parse().ok())
             .map(|id| User(id))
             .or_forward(())
@@ -93,7 +96,14 @@ fn login(
     config: State<Config>,
 ) -> Result<Redirect, Flash<Redirect>> {
     if verify(&config.password_hash, login.password.as_bytes()) {
-        cookies.add_private(Cookie::new("user_id", 1.to_string()));
+        let cookie = Cookie::build(LEAF_SESSION, 1.to_string())
+            .path("/")
+            .secure(config.secure_cookie)
+            .http_only(true)
+            .max_age(Duration::weeks(1))
+            .finish();
+
+        cookies.add_private(cookie);
         Ok(Redirect::to(uri!(tasks::index)))
     } else {
         Err(Flash::error(
@@ -105,7 +115,7 @@ fn login(
 
 #[post("/logout")]
 fn logout(mut cookies: Cookies) -> Flash<Redirect> {
-    cookies.remove_private(Cookie::named("user_id"));
+    cookies.remove_private(Cookie::named(LEAF_SESSION));
     Flash::success(Redirect::to(uri!(login_page)), "Successfully logged out.")
 }
 
