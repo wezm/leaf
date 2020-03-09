@@ -38,7 +38,12 @@ What's not included:
 Download
 --------
 
-TODO
+Pre-built binaries are available:
+
+* [FreeBSD 12.1 amd64](https://releases.wezm.net/leaf/0.1.0-alpha.2/leaf-0.1.0-alpha.2-amd64-unknown-freebsd.tar.gz)
+* [Linux x86\_64](https://releases.wezm.net/leaf/0.1.0-alpha.2/leaf-0.1.0-alpha.2-x86_64-unknown-linux-musl.tar.gz)
+* [Mac OS](https://releases.wezm.net/leaf/0.1.0-alpha.2/leaf-0.1.0-alpha.2-x86_64-apple-darwin.tar.gz)
+<!-- * [Windows](https://releases.wezm.net/leaf/0.1.0-alpha.2/leaf-0.1.0-alpha.2-x86_64-pc-windows-gnu.zip) -->
 
 Using
 -----
