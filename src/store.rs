@@ -281,10 +281,7 @@ mod tests {
         // Now check on the state of the files
         let tasks_csv = fs::read_to_string(tasks_path).unwrap();
         let completed_csv = fs::read_to_string(completed_path).unwrap();
-        assert_eq!(
-            format!("id,description\n{},do another thing\n", id2),
-            tasks_csv
-        );
+        assert_eq!(format!("{},do another thing\n", id2), tasks_csv);
         // TODO: test completed_at...
         assert!(completed_csv.starts_with(&format!("{},do a thing,", id1)));
     }
