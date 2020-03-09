@@ -21,7 +21,7 @@ task:
       tarball="leaf-${tag}-x86_64-unknown-linux-musl.tar.gz"
       strip target/release/leaf
       tar zcf "$tarball" -C target/release leaf
-      ~/bin/upload-to-s3 -b releases.wezm.net "$tarball" "leaf/$tarball"
+      ~/bin/upload-to-s3 -b releases.wezm.net "$tarball" "leaf/$tag/$tarball"
     fi
 
 task:
@@ -45,7 +45,7 @@ task:
       tarball="leaf-${tag}-amd64-unknown-freebsd.tar.gz"
       strip target/release/leaf
       tar zcf "$tarball" -C target/release leaf
-      upload-to-s3 -b releases.wezm.net "$tarball" "leaf/$tarball"
+      upload-to-s3 -b releases.wezm.net "$tarball" "leaf/$tag/$tarball"
     fi
 
 task:
@@ -68,5 +68,5 @@ task:
       tarball="leaf-${tag}-x86_64-apple-darwin.tar.gz"
       strip target/release/leaf
       tar zcf "$tarball" -C target/release leaf
-      upload-to-s3 -b releases.wezm.net "$tarball" "leaf/$tarball"
+      upload-to-s3 -b releases.wezm.net "$tarball" "leaf/$tag/$tarball"
     fi
