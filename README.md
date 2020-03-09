@@ -101,8 +101,7 @@ Running
 
 ### Configuration
 
-Leaf uses environment variables for configuration. To run the server the
-following environment variables need to be set.
+Leaf uses environment variables for configuration.
 
 #### `LEAF_PASSWORD_HASH`
 
@@ -127,6 +126,15 @@ should be set to.
 If setting the var in a shell use single quotes:
 
     export LEAF_PASSWORD_HASH='$argon2i$v=19$m=4096,t=3,p=1$eEVkYlJFZGY$N0p7VxqHDGBZ1ivgotGv2olZ/eXM9WPPCRf0wZuyyLo'
+
+#### `LEAF_API_TOKEN`
+
+The contents of this environment variable is used as a Bearer token (password)
+for the add task route. I use it to add tasks on my phone with the iOS
+Shortcuts workflow above. It must be at least 64 characters long. I used my
+[password manager][gopass] to generate mine.
+
+    export LEAF_API_TOKEN=Insert64orMoreRandomCharactersHere
 
 #### `LEAF_SECURE_COOKIE` (optional)
 
@@ -204,3 +212,4 @@ Appendix
 [Lynx]: https://lynx.invisible-island.net/
 [Muli]: https://www.fontsquirrel.com/fonts/muli
 [secure-cookie]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#Secure
+[gopass]: https://www.gopass.pw/
