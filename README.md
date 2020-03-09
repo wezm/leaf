@@ -16,19 +16,18 @@ Features
 
 What's included:
 
-* A simple task list that lets you add and complete tasks, that's all.
+* A simple task list that lets you add and complete tasks.
 * Uncluttered design.
 * Plain text (CSV) storage.
-* Uses plain old HTML forms — works in almost any browser,
-  including [Lynx].
+* Uses plain old HTML forms — works in almost any browser, including [Lynx].
 * Single file, dependency-free binary.
-* Super fast (typical response times ~20µs), memory efficient (~1.3Mb)
-  server.
+* Super fast — Typical response times are ~160µs.
+* Memory efficient — Uses ~1.4Mb RAM.
 
 What's not included:
 
 * JavaScript.
-* User tracking of any kind.
+* User tracking.
 * Multiple lists.
 * Multiple users.
 * Sharing (outside of sharing a login).
@@ -58,7 +57,7 @@ TODO: Finish
 
 ### Font
 
-To minimise page weight Leaf does not use and web fonts. However it was
+To minimise page weight Leaf does not use any web fonts. However it was
 designed using the [Muli font][Muli] and this font is specified in the CSS.
 Install the font if you would like Leaf use it. If you'd rather not install it,
 that's fine — Leaf will use your browsers default sans-serif font.
@@ -99,8 +98,8 @@ can be generated with the `argon2` tool. This tool is installed by default on
 Arch Linux. If you are using a different system you may need to install it, the
 package is probably called `argon2`.
 
-The shell snippet below will read your from stdin and then prints the hash.
-Type your chosen password and press Enter, note that it will echo in the
+The shell snippet below will read your password from stdin and then print the
+hash. Type your chosen password and press Enter, note that it will echo in the
 terminal. See below for an
 [explanation of the snippet](#password-hash-shell-snippet-explanation).
 
@@ -115,7 +114,7 @@ should be set to.
 If setting the var in a shell use single quotes:
 
     export LEAF_PASSWORD_HASH='$argon2i$v=19$m=4096,t=3,p=1$eEVkYlJFZGY$N0p7VxqHDGBZ1ivgotGv2olZ/eXM9WPPCRf0wZuyyLo'
-    
+
 #### `LEAF_SECURE_COOKIE` (optional)
 
 **Default:** `true`
@@ -171,8 +170,7 @@ Appendix
   if it has one.
 * `$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | head -c 8)` is used to generate a
   random "salt" for the hash.
-  * `$()` runs a command and supplies substitutes it with the output from the
-    command. 
+  * `$()` runs a command and substitutes it with the output from that command.
   * `cat /dev/urandom` reads from the `dev/urandom` pseudo random number
     generator device and writes to stdout.
   * `tr -dc 'a-zA-Z0-9'` reads from stdin and drops (`-d`) characters not in
@@ -192,3 +190,4 @@ Appendix
 [watchexec]: https://github.com/watchexec/watchexec
 [Lynx]: https://lynx.invisible-island.net/
 [Muli]: https://www.fontsquirrel.com/fonts/muli
+[secure-cookie]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#Secure
