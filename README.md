@@ -175,6 +175,16 @@ rustflags = [
 ]
 ```
 
+Licence
+-------
+
+This project is dual licenced under either of:
+
+- Apache License, Version 2.0 ([LICENSE-APACHE](https://github.com/wezm/leaf/blob/master/LICENSE-APACHE))
+- MIT license ([LICENSE-MIT](https://github.com/wezm/leaf/blob/master/LICENSE-MIT))
+
+at your option.
+
 Appendix
 --------
 
