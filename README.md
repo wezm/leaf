@@ -138,12 +138,37 @@ Shortcuts workflow above. It must be at least 64 characters long. I used my
 
     export LEAF_API_TOKEN=Insert64orMoreRandomCharactersHere
 
+#### `ROCKET_SECRET_KEY`
+
+This is used to encrypt the cookie used for authentication. I can be generated with:
+
+    openssl rand -base64 32
+
+#### `LEAF_TASKS_PATH` (optional)
+
+**Default:** `tasks.csv` in the working directory.
+
+The path to the CSV file that will store tasks. If it does not exist it will be
+created.
+
+#### `LEAF_COMPLETED_PATH` (optional)
+
+**Default:** `completed.csv` in the working directory.
+
+The path to the CSV file that will store completed tasks. If it does not exist
+it will be created.
+
 #### `LEAF_SECURE_COOKIE` (optional)
 
 **Default:** `true`
 
 Whether the login cookie sets [the secure flag][secure-cookie]. For local development
 without https, set this to `false.`
+
+#### Rocket Configuration
+
+The web framework Leaf uses ([Rocket]), also has some of it's own configuration
+options: <https://rocket.rs/v0.4/guide/configuration/>.
 
 File Format
 -----------
@@ -214,10 +239,6 @@ Appendix
 * `argon2` receives the random salt as an argument, it reads the password from
   stdin and prints just the encoded hash on stdout (`-e`).
 
-### Generating a Rocket Secret Key
-
-    openssl rand -base64 32
-
 [Read Rust]: https://readrust.net/
 [Feedbin]: https://feedbin.com/
 [watchexec]: https://github.com/watchexec/watchexec
@@ -225,3 +246,4 @@ Appendix
 [Muli]: https://www.fontsquirrel.com/fonts/muli
 [secure-cookie]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#Secure
 [gopass]: https://www.gopass.pw/
+[Rocket]: https://rocket.rs/
