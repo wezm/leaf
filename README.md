@@ -21,7 +21,8 @@ What's included:
 * A simple task list that lets you add and complete tasks.
 * Uncluttered design.
 * Plain text (CSV) storage.
-* Uses plain old HTML forms — works in almost any browser, including [Lynx].
+* Uses plain old HTML forms — works in almost any browser, including [Lynx]
+  ([Screenshot][lynx-screenshot]).
 * Single file, dependency-free binary.
 * Super fast — Typical response times are ~160µs.
 * Memory efficient — Uses ~1.4Mb RAM.
@@ -247,3 +248,4 @@ Appendix
 [secure-cookie]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#Secure
 [gopass]: https://www.gopass.pw/
 [Rocket]: https://rocket.rs/
+[lynx-screenshot]: https://github.com/wezm/leaf/blob/master/screenshot-lynx.png
