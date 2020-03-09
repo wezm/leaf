@@ -1,7 +1,7 @@
 🍃 Leaf Tasks
 =============
 
-Leaf is a lightweight, self-hosted task tracking (todo) tool.
+Leaf is a lightweight, web based, self-hosted task tracking (todo) tool.
 
 I created Leaf Tasks as replacement for my somewhat specific use of
 Wunderlist. I curate, [Read Rust], a site that collects interesting
