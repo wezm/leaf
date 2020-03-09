@@ -1,0 +1,102 @@
+task:
+  name: Build (Debian Linux)
+  container:
+    image: debian:10-slim
+  environment:
+    AWS_ACCESS_KEY_ID: ENCRYPTED[a9bc36f2d541a823c52ffc04e2b78e3d2d4fb5b93f5745c142ed7e15763ffe1c80d57e8b64b38b0161b51ca2c9814d9f]
+    AWS_SECRET_ACCESS_KEY: ENCRYPTED[3871d3f61baaea636868059a4342f7bd72b244dba9cc618ed5d41098a51823198e84bad3b3340006c976c53b772aff20]
+  install_script:
+    - apt-get update && apt-get install -y --no-install-recommends git ca-certificates curl gcc libc6-dev musl-tools
+    - curl https://sh.rustup.rs -sSf | sh -s -- -y --profile minimal --default-toolchain nightly-2020-02-17
+    - 'PATH="$HOME/.cargo/bin:$PATH" rustup target add x86_64-unknown-linux-musl'
+    - mkdir ~/bin
+    - curl -L https://releases.wezm.net/upload-to-s3/upload-to-s3-0.1.8-x86_64-unknown-linux-musl.tar.gz | tar xzf - -C ~/bin
+  clone_script: |
+    if [ -z "$CIRRUS_PR" ]; then
+      git clone --recursive --branch=$CIRRUS_BRANCH https://x-access-token:${CIRRUS_REPO_CLONE_TOKEN}@github.com/${CIRRUS_REPO_FULL_NAME}.git $CIRRUS_WORKING_DIR
+      git reset --hard $CIRRUS_CHANGE_IN_REPO
+    else
+      git clone --recursive https://x-access-token:${CIRRUS_REPO_CLONE_TOKEN}@github.com/${CIRRUS_REPO_FULL_NAME}.git $CIRRUS_WORKING_DIR
+      git fetch origin pull/$CIRRUS_PR/head:pull/$CIRRUS_PR
+      git reset --hard $CIRRUS_CHANGE_IN_REPO
+    fi
+    git fetch --tags
+  test_script:
+    - 'PATH="$HOME/.cargo/bin:$PATH" cargo test'
+  build_script:
+    - 'PATH="$HOME/.cargo/bin:$PATH" cargo build --release --target x86_64-unknown-linux-musl'
+  publish_script: |
+    tag=$(git describe --exact-match HEAD 2>/dev/null || true)
+    if [ -n "$tag" ]; then
+      tarball="leaf-${tag}-x86_64-unknown-linux-musl.tar.gz"
+      strip target/release/leaf
+      tar zcf "$tarball" -C target/release leaf
+      ~/bin/upload-to-s3 -b releases.wezm.net "$tarball" "leaf/$tarball"
+    fi
+
+task:
+  name: Build (FreeBSD)
+  freebsd_instance:
+    image_family: freebsd-12-1
+  environment:
+    AWS_ACCESS_KEY_ID: ENCRYPTED[a9bc36f2d541a823c52ffc04e2b78e3d2d4fb5b93f5745c142ed7e15763ffe1c80d57e8b64b38b0161b51ca2c9814d9f]
+    AWS_SECRET_ACCESS_KEY: ENCRYPTED[3871d3f61baaea636868059a4342f7bd72b244dba9cc618ed5d41098a51823198e84bad3b3340006c976c53b772aff20]
+  install_script:
+    - pkg install -y git-lite
+    - fetch -o - https://sh.rustup.rs | sh -s -- -y --profile minimal --default-toolchain nightly-2020-02-17
+    - fetch -o - https://releases.wezm.net/upload-to-s3/upload-to-s3-0.1.8-amd64-unknown-freebsd.tar.gz | tar xzf - -C /usr/local/bin
+  clone_script: |
+    if [ -z "$CIRRUS_PR" ]; then
+      git clone --recursive --branch=$CIRRUS_BRANCH https://x-access-token:${CIRRUS_REPO_CLONE_TOKEN}@github.com/${CIRRUS_REPO_FULL_NAME}.git $CIRRUS_WORKING_DIR
+      git reset --hard $CIRRUS_CHANGE_IN_REPO
+    else
+      git clone --recursive https://x-access-token:${CIRRUS_REPO_CLONE_TOKEN}@github.com/${CIRRUS_REPO_FULL_NAME}.git $CIRRUS_WORKING_DIR
+      git fetch origin pull/$CIRRUS_PR/head:pull/$CIRRUS_PR
+      git reset --hard $CIRRUS_CHANGE_IN_REPO
+    fi
+    git fetch --tags
+  test_script:
+    - 'PATH="$HOME/.cargo/bin:$PATH" cargo test'
+  build_script:
+    - 'PATH="$HOME/.cargo/bin:$PATH" cargo build --release'
+  publish_script: |
+    tag=$(git describe --exact-match HEAD 2>/dev/null || true)
+    if [ -n "$tag" ]; then
+      tarball="leaf-${tag}-amd64-unknown-freebsd.tar.gz"
+      strip target/release/leaf
+      tar zcf "$tarball" -C target/release leaf
+      upload-to-s3 -b releases.wezm.net "$tarball" "leaf/$tarball"
+    fi
+
+task:
+  name: Build (Mac OS)
+  osx_instance:
+    image: catalina-base
+  environment:
+    AWS_ACCESS_KEY_ID: ENCRYPTED[a9bc36f2d541a823c52ffc04e2b78e3d2d4fb5b93f5745c142ed7e15763ffe1c80d57e8b64b38b0161b51ca2c9814d9f]
+    AWS_SECRET_ACCESS_KEY: ENCRYPTED[3871d3f61baaea636868059a4342f7bd72b244dba9cc618ed5d41098a51823198e84bad3b3340006c976c53b772aff20]
+  clone_script: |
+    if [ -z "$CIRRUS_PR" ]; then
+      git clone --recursive --branch=$CIRRUS_BRANCH https://x-access-token:${CIRRUS_REPO_CLONE_TOKEN}@github.com/${CIRRUS_REPO_FULL_NAME}.git $CIRRUS_WORKING_DIR
+      git reset --hard $CIRRUS_CHANGE_IN_REPO
+    else
+      git clone --recursive https://x-access-token:${CIRRUS_REPO_CLONE_TOKEN}@github.com/${CIRRUS_REPO_FULL_NAME}.git $CIRRUS_WORKING_DIR
+      git fetch origin pull/$CIRRUS_PR/head:pull/$CIRRUS_PR
+      git reset --hard $CIRRUS_CHANGE_IN_REPO
+    fi
+    git fetch --tags
+  install_script:
+    - curl https://sh.rustup.rs -sSf | sh -s -- -y --profile minimal --default-toolchain nightly-2020-02-17
+    - curl -L https://releases.wezm.net/upload-to-s3/upload-to-s3-0.1.8-x86_64-apple-darwin.tar.gz | tar xzf - -C /usr/local/bin
+  test_script:
+    - 'PATH="$HOME/.cargo/bin:$PATH" cargo test'
+  build_script:
+    - 'PATH="$HOME/.cargo/bin:$PATH" cargo build --release'
+  publish_script: |
+    tag=$(git describe --exact-match HEAD 2>/dev/null || true)
+    if [ -n "$tag" ]; then
+      tarball="leaf-${tag}-x86_64-apple-darwin.tar.gz"
+      strip target/release/leaf
+      tar zcf "$tarball" -C target/release leaf
+      upload-to-s3 -b releases.wezm.net "$tarball" "leaf/$tarball"
+    fi
