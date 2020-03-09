@@ -118,7 +118,7 @@ hash. Type your chosen password and press Enter, note that it will echo in the
 terminal. See below for an
 [explanation of the snippet](#password-hash-shell-snippet-explanation).
 
-    (read -r PASS; echo -n "$PASS" | argon2 $(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | head -c 8) -e)
+    (read -r PASS; echo -n "$PASS" | argon2 $(cat /dev/urandom | LC_ALL=C tr -dc 'a-zA-Z0-9' | head -c 8) -e)
 
 You should see something like the following, which is what `LEAF_PASSWORD_HASH`
 should be set to.
