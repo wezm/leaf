@@ -53,7 +53,15 @@ Using
 This workflow for the built-in Shortcuts app allows you to add new tasks using the
 standard share sheet.
 
-TODO: Finish
+<https://www.icloud.com/shortcuts/b90e0304a40545ff8c53b8ed3c63d131>
+
+You will need to customise two things:
+
+1. In the Text block with "Bearer `your-api-token`", replace `your-api-token`
+   with the token the Leaf instance is using (`LEAF_API_TOKEN` environment
+   variable).
+2. In the URL block, replace https://example.com/tasks with the URL of your
+   Leaf instance.
 
 ### Tips
 
