@@ -11,7 +11,7 @@ Feedbin — typically on my phone I use the iOS share sheet functionality
 to add a link to Wunderlist. With Wunderlist being shut down in May
 2020 I built Leaf as a replacement.
 
-![Screenshot](https://github.com/wezm/leaf/raw/master/screenshot.png)
+<img src="https://github.com/wezm/leaf/raw/master/screenshot.png" width="698">
 
 Features
 --------
