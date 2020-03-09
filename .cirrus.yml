@@ -11,16 +11,6 @@ task:
     - 'PATH="$HOME/.cargo/bin:$PATH" rustup target add x86_64-unknown-linux-musl'
     - mkdir ~/bin
     - curl -L https://releases.wezm.net/upload-to-s3/upload-to-s3-0.1.8-x86_64-unknown-linux-musl.tar.gz | tar xzf - -C ~/bin
-  clone_script: |
-    if [ -z "$CIRRUS_PR" ]; then
-      git clone --recursive --branch=$CIRRUS_BRANCH https://x-access-token:${CIRRUS_REPO_CLONE_TOKEN}@github.com/${CIRRUS_REPO_FULL_NAME}.git $CIRRUS_WORKING_DIR
-      git reset --hard $CIRRUS_CHANGE_IN_REPO
-    else
-      git clone --recursive https://x-access-token:${CIRRUS_REPO_CLONE_TOKEN}@github.com/${CIRRUS_REPO_FULL_NAME}.git $CIRRUS_WORKING_DIR
-      git fetch origin pull/$CIRRUS_PR/head:pull/$CIRRUS_PR
-      git reset --hard $CIRRUS_CHANGE_IN_REPO
-    fi
-    git fetch --tags
   test_script:
     - 'PATH="$HOME/.cargo/bin:$PATH" cargo test'
   build_script:
@@ -45,16 +35,6 @@ task:
     - pkg install -y git-lite
     - fetch -o - https://sh.rustup.rs | sh -s -- -y --profile minimal --default-toolchain nightly-2020-02-17
     - fetch -o - https://releases.wezm.net/upload-to-s3/upload-to-s3-0.1.8-amd64-unknown-freebsd.tar.gz | tar xzf - -C /usr/local/bin
-  clone_script: |
-    if [ -z "$CIRRUS_PR" ]; then
-      git clone --recursive --branch=$CIRRUS_BRANCH https://x-access-token:${CIRRUS_REPO_CLONE_TOKEN}@github.com/${CIRRUS_REPO_FULL_NAME}.git $CIRRUS_WORKING_DIR
-      git reset --hard $CIRRUS_CHANGE_IN_REPO
-    else
-      git clone --recursive https://x-access-token:${CIRRUS_REPO_CLONE_TOKEN}@github.com/${CIRRUS_REPO_FULL_NAME}.git $CIRRUS_WORKING_DIR
-      git fetch origin pull/$CIRRUS_PR/head:pull/$CIRRUS_PR
-      git reset --hard $CIRRUS_CHANGE_IN_REPO
-    fi
-    git fetch --tags
   test_script:
     - 'PATH="$HOME/.cargo/bin:$PATH" cargo test'
   build_script:
@@ -75,16 +55,6 @@ task:
   environment:
     AWS_ACCESS_KEY_ID: ENCRYPTED[d8943637dff8371d55ba219e4ff3a78fafebd02bb2b975e8bdf5a39609bc9e872048cdb24220a7e40f9da8aba757e787]
     AWS_SECRET_ACCESS_KEY: ENCRYPTED[ade7bd906b825fe62d4de67213dbf013073ae590a0a23ad4b362b2774a6d15c56a9bd531ad42998306e9b8ebdf02d580]
-  clone_script: |
-    if [ -z "$CIRRUS_PR" ]; then
-      git clone --recursive --branch=$CIRRUS_BRANCH https://x-access-token:${CIRRUS_REPO_CLONE_TOKEN}@github.com/${CIRRUS_REPO_FULL_NAME}.git $CIRRUS_WORKING_DIR
-      git reset --hard $CIRRUS_CHANGE_IN_REPO
-    else
-      git clone --recursive https://x-access-token:${CIRRUS_REPO_CLONE_TOKEN}@github.com/${CIRRUS_REPO_FULL_NAME}.git $CIRRUS_WORKING_DIR
-      git fetch origin pull/$CIRRUS_PR/head:pull/$CIRRUS_PR
-      git reset --hard $CIRRUS_CHANGE_IN_REPO
-    fi
-    git fetch --tags
   install_script:
     - curl https://sh.rustup.rs -sSf | sh -s -- -y --profile minimal --default-toolchain nightly-2020-02-17
     - curl -L https://releases.wezm.net/upload-to-s3/upload-to-s3-0.1.8-x86_64-apple-darwin.tar.gz | tar xzf - -C /usr/local/bin
