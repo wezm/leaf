@@ -7,7 +7,7 @@ use std::{fmt, fs, io};
 use chrono::prelude::*;
 use rusty_ulid::Ulid;
 
-use crate::models::*; // FIXME: *
+use crate::models::{CompletedTask, NewTask, Task, TaskId};
 
 // This module operates under the assumption that the active task list will generally remain
 // fairly small, but the completed list will be more or less ever growing. This, we typically
@@ -124,7 +124,6 @@ impl ReadWriteTaskList {
 impl CreateTask for ReadWriteTaskList {
     fn create(&mut self, new_task: NewTask) -> Result<TaskId, Error> {
         // Add the new task to self, then append it to the file
-
         let id = Ulid::generate();
         let task = Task {
             id,
