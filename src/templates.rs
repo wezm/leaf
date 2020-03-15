@@ -44,7 +44,7 @@ markup::define! {
             ul."task-list" {
                 li."new-task" {
                     span.ornament {{markup::raw("➕&#xFE0E; ")}}
-                    input[type="text", name="description", placeholder="New task"];
+                    input[type="text", name="description", placeholder="New task", autofocus?=true];
                 }
                 @for task in *(tasks) {
                     {Task { id: task.id.to_string(), description: &task.description }}
