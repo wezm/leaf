@@ -10,7 +10,7 @@ task:
     - curl https://sh.rustup.rs -sSf | sh -s -- -y --profile minimal --default-toolchain nightly-2020-02-17
     - 'PATH="$HOME/.cargo/bin:$PATH" rustup target add x86_64-unknown-linux-musl'
     - mkdir ~/bin
-    - curl -L https://releases.wezm.net/upload-to-s3/upload-to-s3-0.1.8-x86_64-unknown-linux-musl.tar.gz | tar xzf - -C ~/bin
+    - curl -L https://releases.wezm.net/upload-to-s3/0.1.10/upload-to-s3-0.1.10-x86_64-unknown-linux-musl.tar.gz | tar xzf - -C ~/bin
   test_script:
     - 'PATH="$HOME/.cargo/bin:$PATH" cargo test'
   build_script:
@@ -34,7 +34,7 @@ task:
   install_script:
     - pkg install -y git-lite
     - fetch -o - https://sh.rustup.rs | sh -s -- -y --profile minimal --default-toolchain nightly-2020-02-17
-    - fetch -o - https://releases.wezm.net/upload-to-s3/upload-to-s3-0.1.8-amd64-unknown-freebsd.tar.gz | tar xzf - -C /usr/local/bin
+    - fetch -o - https://releases.wezm.net/upload-to-s3/0.1.10/upload-to-s3-0.1.10-amd64-unknown-freebsd.tar.gz | tar xzf - -C /usr/local/bin
   test_script:
     - 'PATH="$HOME/.cargo/bin:$PATH" cargo test'
   build_script:
@@ -57,7 +57,7 @@ task:
     AWS_SECRET_ACCESS_KEY: ENCRYPTED[ade7bd906b825fe62d4de67213dbf013073ae590a0a23ad4b362b2774a6d15c56a9bd531ad42998306e9b8ebdf02d580]
   install_script:
     - curl https://sh.rustup.rs -sSf | sh -s -- -y --profile minimal --default-toolchain nightly-2020-02-17
-    - curl -L https://releases.wezm.net/upload-to-s3/upload-to-s3-0.1.8-x86_64-apple-darwin.tar.gz | tar xzf - -C /usr/local/bin
+    - curl -L https://releases.wezm.net/upload-to-s3/0.1.10/upload-to-s3-0.1.10-x86_64-apple-darwin.tar.gz | tar xzf - -C /usr/local/bin
   test_script:
     - 'PATH="$HOME/.cargo/bin:$PATH" cargo test'
   build_script:
@@ -70,3 +70,36 @@ task:
       tar zcf "$tarball" -C target/release leaf
       upload-to-s3 -b releases.wezm.net "$tarball" "leaf/$tag/$tarball"
     fi
+
+task:
+  name: Build (Windows)
+  windows_container:
+    image: cirrusci/windowsservercore:cmake
+  environment:
+    AWS_ACCESS_KEY_ID: ENCRYPTED[d8943637dff8371d55ba219e4ff3a78fafebd02bb2b975e8bdf5a39609bc9e872048cdb24220a7e40f9da8aba757e787]
+    AWS_SECRET_ACCESS_KEY: ENCRYPTED[ade7bd906b825fe62d4de67213dbf013073ae590a0a23ad4b362b2774a6d15c56a9bd531ad42998306e9b8ebdf02d580]
+    CIRRUS_SHELL: powershell
+  install_script:
+    - Invoke-WebRequest -Uri https://win.rustup.rs/x86_64 -OutFile rustup-init.exe
+    - .\rustup-init -y --profile minimal
+    - Invoke-WebRequest https://releases.wezm.net/upload-to-s3/0.1.10/upload-to-s3-0.1.10-x86_64-pc-windows-msvc.zip -OutFile upload-to-s3.zip
+    - Expand-Archive upload-to-s3.zip -DestinationPath .
+    - git fetch --tags
+  test_script:
+    - '~\.cargo\bin\cargo test'
+  build_script:
+    - '~\.cargo\bin\cargo build --release'
+  publish_script: |
+    try {
+      $tag=$(git describe --exact-match HEAD 2>$null)
+    } catch {
+      $tag=""
+    }
+    if ( $tag.Length -gt 0 ) {
+      $tarball="leaf-$tag-x86_64-pc-windows-msvc.zip"
+      cd target\release
+      strip leaf.exe
+      Compress-Archive .\leaf.exe "$tarball"
+      cd ..\..
+      .\upload-to-s3 -b releases.wezm.net "target\release\$tarball" "leaf/$tag/$tarball"
+    }
