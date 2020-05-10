@@ -18,7 +18,7 @@ pub fn routes() -> Vec<Route> {
 fn index(user: User, _msg: Option<FlashMessage>, state: State<Store>) -> content::Html<String> {
     let store = state.lock().unwrap();
     let page: templates::Layout<'_, '_, _> = templates::Layout {
-        title: "🍃 Tasks",
+        title: "Tasks",
         body: templates::Index {
             tasks: store.list(),
         },

@@ -127,7 +127,7 @@ fn login_user(_user: User) -> Redirect {
 #[get("/login", rank = 2)]
 pub fn login_page(flash: Option<FlashMessage>) -> content::Html<String> {
     let page: templates::Layout<'_, '_, _> = templates::Layout {
-        title: "🍃 Login",
+        title: "Login",
         body: templates::Login {
             flash: flash.as_ref().map(|flash| flash.msg()),
         },
