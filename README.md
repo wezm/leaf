@@ -56,7 +56,7 @@ Using
 This workflow for the built-in Shortcuts app allows you to add new tasks using the
 standard share sheet.
 
-<https://www.icloud.com/shortcuts/b90e0304a40545ff8c53b8ed3c63d131>
+<https://www.icloud.com/shortcuts/aabb57aa14a2465a82002c83a33bb0e6>
 
 You will need to customise two things:
 
