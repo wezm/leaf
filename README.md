@@ -152,12 +152,20 @@ This is used to encrypt the cookie used for authentication. I can be generated w
 The path to the CSV file that will store tasks. If it does not exist it will be
 created.
 
+**Note:** `~` is not expanded in environment variables. If you want to refer to
+your home directory use `$HOME`. E.g.
+`LEAF_TASKS_PATH=$HOME/Documents/tasks.csv`.
+
 #### `LEAF_COMPLETED_PATH` (optional)
 
 **Default:** `completed.csv` in the working directory.
 
 The path to the CSV file that will store completed tasks. If it does not exist
 it will be created.
+
+**Note:** `~` is not expanded in environment variables. If you want to refer to
+your home directory use `$HOME`. E.g.
+`LEAF_COMPLETED_PATH=$HOME/Documents/completed.csv`.
 
 #### `LEAF_SECURE_COOKIE` (optional)
 
@@ -168,7 +176,7 @@ without https, set this to `false.`
 
 #### Rocket Configuration
 
-The web framework Leaf uses ([Rocket]), also has some of it's own configuration
+The web framework Leaf uses ([Rocket]), also has some of its own configuration
 options: <https://rocket.rs/v0.4/guide/configuration/>.
 
 File Format
