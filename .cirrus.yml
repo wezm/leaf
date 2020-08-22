@@ -2,6 +2,7 @@ task:
   name: Build (Debian Linux)
   container:
     image: debian:10-slim
+    cpu: 6
   environment:
     AWS_ACCESS_KEY_ID: ENCRYPTED[d8943637dff8371d55ba219e4ff3a78fafebd02bb2b975e8bdf5a39609bc9e872048cdb24220a7e40f9da8aba757e787]
     AWS_SECRET_ACCESS_KEY: ENCRYPTED[ade7bd906b825fe62d4de67213dbf013073ae590a0a23ad4b362b2774a6d15c56a9bd531ad42998306e9b8ebdf02d580]
