@@ -8,7 +8,7 @@ task:
     AWS_SECRET_ACCESS_KEY: ENCRYPTED[ade7bd906b825fe62d4de67213dbf013073ae590a0a23ad4b362b2774a6d15c56a9bd531ad42998306e9b8ebdf02d580]
   install_script:
     - apt-get update && apt-get install -y --no-install-recommends git ca-certificates curl gcc libc6-dev musl-tools
-    - curl https://sh.rustup.rs -sSf | sh -s -- -y --profile minimal --default-toolchain nightly-2020-08-27
+    - curl https://sh.rustup.rs -sSf | sh -s -- -y --profile minimal --default-toolchain nightly-2021-05-19
     - 'PATH="$HOME/.cargo/bin:$PATH" rustup target add x86_64-unknown-linux-musl'
     - mkdir ~/bin
     - curl -L https://releases.wezm.net/upload-to-s3/0.1.10/upload-to-s3-0.1.10-x86_64-unknown-linux-musl.tar.gz | tar xzf - -C ~/bin
@@ -34,7 +34,7 @@ task:
     AWS_SECRET_ACCESS_KEY: ENCRYPTED[ade7bd906b825fe62d4de67213dbf013073ae590a0a23ad4b362b2774a6d15c56a9bd531ad42998306e9b8ebdf02d580]
   install_script:
     - pkg install -y git-lite
-    - fetch -o - https://sh.rustup.rs | sh -s -- -y --profile minimal --default-toolchain nightly-2020-08-27
+    - fetch -o - https://sh.rustup.rs | sh -s -- -y --profile minimal --default-toolchain nightly-2021-05-19
     - fetch -o - https://releases.wezm.net/upload-to-s3/0.1.10/upload-to-s3-0.1.10-amd64-unknown-freebsd.tar.gz | tar xzf - -C /usr/local/bin
   test_script:
     - 'PATH="$HOME/.cargo/bin:$PATH" cargo test'
@@ -57,7 +57,7 @@ task:
     AWS_ACCESS_KEY_ID: ENCRYPTED[d8943637dff8371d55ba219e4ff3a78fafebd02bb2b975e8bdf5a39609bc9e872048cdb24220a7e40f9da8aba757e787]
     AWS_SECRET_ACCESS_KEY: ENCRYPTED[ade7bd906b825fe62d4de67213dbf013073ae590a0a23ad4b362b2774a6d15c56a9bd531ad42998306e9b8ebdf02d580]
   install_script:
-    - curl https://sh.rustup.rs -sSf | sh -s -- -y --profile minimal --default-toolchain nightly-2020-08-27
+    - curl https://sh.rustup.rs -sSf | sh -s -- -y --profile minimal --default-toolchain nightly-2021-05-19
     - curl -L https://releases.wezm.net/upload-to-s3/0.1.10/upload-to-s3-0.1.10-x86_64-apple-darwin.tar.gz | tar xzf - -C /usr/local/bin
   test_script:
     - 'PATH="$HOME/.cargo/bin:$PATH" cargo test'
