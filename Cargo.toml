@@ -24,3 +24,6 @@ default-features = false
 
 [dev-dependencies]
 tempfile = "3.1"
+
+[patch.crates-io]
+traitobject = { git = "https://github.com/reem/rust-traitobject.git" }
