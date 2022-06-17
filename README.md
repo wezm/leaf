@@ -43,10 +43,10 @@ Download
 
 Pre-built binaries are available:
 
-* [FreeBSD 12.1 amd64](https://releases.wezm.net/leaf/0.2.0/leaf-0.2.0-amd64-unknown-freebsd.tar.gz)
-* [Linux x86\_64](https://releases.wezm.net/leaf/0.2.0/leaf-0.2.0-x86_64-unknown-linux-musl.tar.gz)
-* [Mac OS](https://releases.wezm.net/leaf/0.2.0/leaf-0.2.0-x86_64-apple-darwin.tar.gz)
-* [Windows x86\_64](https://releases.wezm.net/leaf/0.2.0/leaf-0.2.0-x86_64-pc-windows-msvc.zip)
+* [FreeBSD 13 amd64](https://releases.wezm.net/leaf/0.4.0/leaf-0.4.0-amd64-unknown-freebsd.tar.gz)
+* [Linux x86\_64](https://releases.wezm.net/leaf/0.4.0/leaf-0.4.0-x86_64-unknown-linux-musl.tar.gz)
+* [Mac OS](https://releases.wezm.net/leaf/0.4.0/leaf-0.4.0-x86_64-apple-darwin.tar.gz)
+* [Windows x86\_64](https://releases.wezm.net/leaf/0.4.0/leaf-0.4.0-x86_64-pc-windows-msvc.zip)
 
 Using
 -----
